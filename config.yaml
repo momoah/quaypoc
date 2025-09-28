@@ -1,0 +1,33 @@
+BUILDLOGS_REDIS:
+    host: redis
+    password: strongpassword
+    port: 6379
+FEATURE_PROXY_CACHE: true
+CREATE_NAMESPACE_ON_PUSH: true
+DATABASE_SECRET_KEY: a8c2744b-7004-4af2-bcee-e417e7bdd235a # Can be anything, as long as it is unique.
+DB_URI: postgresql://quayuser:quaypass@postgresql-quay:5432/quay
+DB_CONNECTION_ARGS:
+  pool_size: 20      # Default, adjust if needed
+  pool_recycle: 3600 # Default, recycles connections every hour
+DISTRIBUTED_STORAGE_CONFIG:
+    default:
+        - LocalStorage
+        - storage_path: /datastorage/registry
+DISTRIBUTED_STORAGE_DEFAULT_LOCATIONS: []
+DISTRIBUTED_STORAGE_PREFERENCE:
+    - default
+FEATURE_MAILING: false
+SECRET_KEY: e9bd34f4-900c-436a-979e-7530e5d74ac8
+SERVER_HOSTNAME: quay.local.momolab.io
+PREFERRED_URL_SCHEME: https
+FEATURE_GARBAGE_COLLECTION: true
+SETUP_COMPLETE: true
+SUPER_USERS:
+  - quayadmin
+USER_EVENTS_REDIS:
+    host: redis
+    password: strongpassword
+    port: 6379
+
+
+

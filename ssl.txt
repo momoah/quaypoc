@@ -1,0 +1,32 @@
+https://docs.redhat.com/en/documentation/red_hat_quay/3.15/html/proof_of_concept_-_deploying_red_hat_quay/advanced-quay-poc-deployment#advanced-quay-poc-deployment
+
+openssl genrsa -out rootCA.key 2048
+openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
+openssl genrsa -out ssl.key 2048
+openssl req -new -key ssl.key -out ssl.csr
+
+cat > ./openssl.cnf << EOF
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = quay.local.momolab.io
+IP.1 = 192.168.1.218
+EOF
+
+openssl x509 -req -in ssl.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out ssl.cert -days 356 -extensions v3_req -extfile openssl.cnf
+
+mkdir -p /etc/containers/certs.d/quay.local.momolab.io/
+
+cp ssl/rootCA.pem /etc/containers/certs.d/quay.local.momolab.io/rootCA.crt
+cp ssl/ssl.cert /etc/containers/certs.d/quay.local.momolab.io/ssl.crt
+cp ssl/ssl.cert /data/quay/config/ssl.crt
+cp ssl/ssl.key /etc/containers/certs.d/quay.local.momolab.io/ssl.key
+cp config/ssl.cert /etc/pki/ca-trust/source/anchors/
+
+
