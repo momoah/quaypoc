@@ -23,6 +23,10 @@ cleanup_containers() {
 # --- Execute Cleanup before starting new containers ---
 cleanup_containers
 
+# --- ensure network is present ---- 
+podman network create quay-net
+
+
 # --- 1. Postgres DB Setup ---
 echo "Starting PostgreSQL container..."
 mkdir -p $QUAY/postgres-quay
@@ -31,6 +35,7 @@ setfacl -m u:26:-wx $QUAY/postgres-quay
 podman run -d --name postgresql-quay \
 --authfile /data/registry.redhat.io.auth.json \
 --restart=always \
+--net quay-net \
 -e POSTGRESQL_USER=quayuser \
 -e POSTGRESQL_PASSWORD=quaypass \
 -e POSTGRESQL_DATABASE=quay \
@@ -54,6 +59,7 @@ podman exec -it postgresql-quay /bin/bash -c 'echo "CREATE EXTENSION IF NOT EXIS
 # --- 2. REDIS Setup ---
 echo "Starting Redis container..."
 podman run -d --name redis \
+--net quay-net \
 --authfile /data/registry.redhat.io.auth.json \
 --restart=always \
 -p 6379:6379 \
@@ -78,6 +84,7 @@ setfacl -m u:1001:-wx $QUAY/storage
 
 # Start Quay
 podman run -d -p 80:8080 -p 443:8443 \
+--net quay-net \
 --authfile /data/registry.redhat.io.auth.json \
 --restart=always \
 --name=quay \
