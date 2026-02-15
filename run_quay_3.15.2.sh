@@ -1,10 +1,15 @@
 #!/bin/bash
 # A script to start containerised Quay after a shutdown or a reboot (avoiding systemd here).
+<<<<<<< HEAD
 # Before updating this script, check crontab for a line like this:
 # @reboot /data/run_quay_3.15.2.sh
 
 export QUAY=/data/quayroot
 cd $QUAY
+=======
+
+export QUAY=/data/quayroot
+>>>>>>> 560463ae18e78607bf1c6a52513abb4c5ce58fa2
 
 # --- Cleanup Function ---
 cleanup_containers() {
@@ -27,9 +32,14 @@ cleanup_containers() {
 cleanup_containers
 
 # --- ensure network is present ---- 
+<<<<<<< HEAD
 if ! podman network exists quay-net; then
     podman network create quay-net
 fi
+=======
+podman network create quay-net
+
+>>>>>>> 560463ae18e78607bf1c6a52513abb4c5ce58fa2
 
 # --- 1. Postgres DB Setup ---
 echo "Starting PostgreSQL container..."
@@ -80,11 +90,15 @@ if [ ! -f config.yaml ]; then
     echo "ERROR: config.yaml not found in the current directory."
     exit 1
 fi
+<<<<<<< HEAD
 if [ ! -f $QUAY/config.yaml ]; then  # <-- Check the correct path
     echo "ERROR: config.yaml not found in $QUAY/config/"
     exit 1
 fi
 cp $QUAY/config.yaml $QUAY/config/
+=======
+cp config.yaml $QUAY/config/
+>>>>>>> 560463ae18e78607bf1c6a52513abb4c5ce58fa2
 
 # Storage setup
 mkdir -p $QUAY/storage
